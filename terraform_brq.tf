@@ -66,3 +66,18 @@ resource "aws_route_table" "rotas_brq" {
     Name = "GustavoGomez"
   }
 }
+
+resource "aws_subnet" "subrede_brq" {
+  vpc_id            = aws_vpc.vpc_brq.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = var.aws_az
+  tags = {
+    Name = "RonyRustico"
+  }
+}
+
+resource "aws_route_table_association" "associacao" {
+  subnet_id      = aws_subnet.subrede_brq.id
+  route_table_id = aws_route_table.rotas_brq.id
+}
+
