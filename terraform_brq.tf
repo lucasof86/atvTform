@@ -127,3 +127,23 @@ resource "aws_security_group" "firewall" {
     Name = "Dudu"
   }
 }
+
+resource "aws_network_interface" "interface_rede" {
+  subnet_id       = aws_subnet.subrede_brq.id
+  private_ips     = ["10.0.1.51"]
+  security_groups = [aws_security_group.firewall.id]
+  tags = {
+    Name = "Weverton"
+  }
+}
+
+resource "aws_eip" "ip_publico" {
+  vpc                       = true
+  network_interface         = aws_network_interface.interface_rede.id
+  associate_with_private_ip = "10.0.1.51"
+  depends_on                = [aws_internet_gateway.gw_brq]
+}
+
+output "ip_publico" {
+  value = aws_eip.ip_publico.public_ip
+}
