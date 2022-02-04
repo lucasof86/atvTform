@@ -32,6 +32,16 @@ variable "aws_az" {
  description = "AWS availability zone"
  type        = string
 }
+
+variable "instance_ami" {
+ description = "Definição da ami da instancia"
+ type        = string
+}
+
+variable "instance_type" {
+ description = "Definição da ami da instancia"
+ type        = string
+}
 #END
 
 provider "aws" {
@@ -146,4 +156,25 @@ resource "aws_eip" "ip_publico" {
 
 output "ip_publico" {
   value = aws_eip.ip_publico.public_ip
+}
+
+resource "aws_instance" "app_web" {
+  ami               = var.instance_ami
+  instance_type     = var.instance_type
+  availability_zone = var.aws_az
+  network_interface {
+    device_index         = 0
+    network_interface_id = aws_network_interface.interface_rede.id
+  }
+  user_data = <<-EOF
+               #! /bin/bash
+               sudo apt-get update -y
+               sudo apt-get install -y apache2
+               sudo systemctl start apache2
+               sudo systemctl enable apache2
+               sudo bash -c 'echo "<h1>Estou funcionando! :D</h1>"  > /var/www/html/index.html'
+             EOF
+  tags = {
+    Name = "RaphaelVeiga"
+  }
 }
