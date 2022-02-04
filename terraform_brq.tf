@@ -27,6 +27,11 @@ variable "aws_vpc_cidr_block" {
  description = "The IPv4 CIDR block for the VPC"
  type        = string
 }
+
+variable "aws_az" {
+ description = "AWS availability zone"
+ type        = string
+}
 #END
 
 provider "aws" {
